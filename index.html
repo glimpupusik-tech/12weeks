@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>12 недель в году — Год 2 (14.09 – 07.12.2026)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+    .tap-btn {
+      transition: transform 0.12s ease, background-color 0.15s ease, border-color 0.15s ease;
+      user-select: none;
+    }
+    .tap-btn:active {
+      transform: scale(0.95);
+    }
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-24 md:pb-10">
+
+  <!-- Top Header -->
+  <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-200">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-emerald-600 text-white font-bold text-xs shadow-sm">12</span>
+          <h1 class="text-base sm:text-lg font-bold tracking-tight text-slate-900">12 недель в году</h1>
+        </div>
+        <p class="text-xs text-slate-500 mt-0.5">Год 2 • 14.09 – 07.12.2026</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="btn-backup" class="tap-btn px-2.5 py-1.5 text-xs font-medium rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700">
+          Бэкап
+        </button>
+        <button id="btn-add-tactic" class="tap-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm">
+          + Задача
+        </button>
+      </div>
+    </div>
+
+    <!-- Desktop / Tablet Sub-navigation -->
+    <div class="hidden md:block border-t border-slate-100 bg-slate-50/70">
+      <div class="max-w-5xl mx-auto px-4 flex gap-6">
+        <button data-tab="tracker" class="nav-tab-desktop py-2.5 text-sm font-semibold border-b-2 border-emerald-600 text-emerald-700">
+          Трекер недели
+        </button>
+        <button data-tab="overview" class="nav-tab-desktop py-2.5 text-sm font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-800">
+          12 недель и Цели
+        </button>
+        <button data-tab="notes" class="nav-tab-desktop py-2.5 text-sm font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-800">
+          Заметки и Итоги
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-5xl mx-auto px-3 sm:px-4 pt-4 space-y-4">
+
+    <!-- TAB 1: WEEKLY TRACKER -->
+    <section id="tab-tracker" class="space-y-4">
+
+      <!-- Week Selector Strip + Live Score Card -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
+        <!-- Score Card -->
+        <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <span id="current-week-badge" class="px-2 py-0.5 text-xs font-bold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Неделя 10</span>
+              <span id="current-week-dates" class="text-xs text-slate-500 font-medium">16.11 – 22.11</span>
+            </div>
+            <div class="mt-2 flex items-baseline gap-2">
+              <span id="week-score-pct" class="text-3xl font-extrabold text-slate-900">0%</span>
+              <span class="text-xs font-medium text-slate-500">выполнение (цель ≥ 85%)</span>
+            </div>
+            <p id="week-score-status" class="text-xs mt-1 font-medium text-emerald-600"></p>
+          </div>
+          <div class="relative w-16 h-16 flex-shrink-0">
+            <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+              <path class="text-slate-100" stroke="currentColor" stroke-width="3.5" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              <path id="week-score-ring" class="text-emerald-500 transition-all duration-300" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="0, 100" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center text-xs font-bold text-slate-700" id="week-score-fraction">0/0</div>
+          </div>
+        </div>
+
+        <!-- Week Pills & View Mode -->
+        <div class="lg:col-span-2 bg-white rounded-2xl p-3.5 border border-slate-200 shadow-sm flex flex-col justify-between gap-3">
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Выбор недели</span>
+            <div class="inline-flex rounded-lg bg-slate-100 p-0.5">
+              <button id="mode-day" class="tap-btn px-2.5 py-1 text-xs font-semibold rounded-md bg-white text-slate-900 shadow-sm">По дням</button>
+              <button id="mode-grid" class="tap-btn px-2.5 py-1 text-xs font-medium rounded-md text-slate-600">Сетка Пн–Вс</button>
+            </div>
+          </div>
+          <div id="week-pills" class="flex gap-1.5 overflow-x-auto hide-scrollbar pb-0.5"></div>
+        </div>
+      </div>
+
+      <!-- Goal Filter Pills -->
+      <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-1">
+        <button data-goal-filter="all" class="goal-filter-btn tap-btn px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-900 text-white whitespace-nowrap">Все задачи</button>
+        <button data-goal-filter="1" class="goal-filter-btn tap-btn px-3 py-1.5 rounded-full text-xs font-medium bg-white border border-slate-200 text-slate-700 whitespace-nowrap">Цель ① Режим и здоровье</button>
+        <button data-goal-filter="2" class="goal-filter-btn tap-btn px-3 py-1.5 rounded-full text-xs font-medium bg-white border border-slate-200 text-slate-700 whitespace-nowrap">Цель ② Обучение</button>
+        <button data-goal-filter="3" class="goal-filter-btn tap-btn px-3 py-1.5 rounded-full text-xs font-medium bg-white border border-slate-200 text-slate-700 whitespace-nowrap">Цель ③ Инвестиции</button>
+      </div>
+
+      <!-- Day-by-Day Mobile Fast View -->
+      <div id="view-day-container" class="space-y-3">
+        <!-- Day Selector -->
+        <div id="day-pills" class="grid grid-cols-7 gap-1.5 bg-white p-2 rounded-2xl border border-slate-200 shadow-sm"></div>
+
+        <!-- Day Summary Bar -->
+        <div class="flex items-center justify-between px-1">
+          <p class="text-xs text-slate-500">Нажмите на задачу: <span class="font-semibold text-emerald-700">✓ Выполнено</span> → <span class="font-semibold text-rose-600">✗ Пропуск</span> → <span class="font-semibold text-slate-500">• Пусто</span></p>
+          <span id="day-progress-text" class="text-xs font-bold text-slate-700">0/0</span>
+        </div>
+
+        <!-- Day Task Cards -->
+        <div id="day-tasks-list" class="space-y-2"></div>
+      </div>
+
+      <!-- Full Week Grid View (Mirroring the Paper Notebook) -->
+      <div id="view-grid-container" class="hidden bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse min-w-[600px]">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-500">
+                <th class="py-2.5 px-3 w-14">Время</th>
+                <th class="py-2.5 px-2">Задача</th>
+                <th class="py-2.5 px-1 text-center w-11">Пн</th>
+                <th class="py-2.5 px-1 text-center w-11">Вт</th>
+                <th class="py-2.5 px-1 text-center w-11">Ср</th>
+                <th class="py-2.5 px-1 text-center w-11">Чт</th>
+                <th class="py-2.5 px-1 text-center w-11">Пт</th>
+                <th class="py-2.5 px-1 text-center w-11">Сб</th>
+                <th class="py-2.5 px-1 text-center w-11">Вс</th>
+                <th class="py-2.5 px-3 text-right w-16">%</th>
+              </tr>
+            </thead>
+            <tbody id="grid-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- TAB 2: 12-WEEK OVERVIEW & GOALS -->
+    <section id="tab-overview" class="hidden space-y-4">
+      <!-- KPI Summary Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" id="goal-kpi-cards"></div>
+
+      <!-- 12-Week Execution Chart -->
+      <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <h2 class="text-sm font-bold text-slate-900">Динамика выполнения по неделям</h2>
+            <p class="text-xs text-slate-500">Целевой ориентир книги «12 недель в году» — 85%</p>
+          </div>
+          <span class="px-2 py-1 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-700">Недели 1–12</span>
+        </div>
+        <div class="relative h-64">
+          <canvas id="weeksChart"></canvas>
+        </div>
+      </div>
+
+      <!-- 12-Week Matrix Table -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+          <div>
+            <h2 class="text-sm font-bold text-slate-900">Сводная таблица: Год 2 (12 недель)</h2>
+            <p class="text-xs text-slate-500">Недели 1–9 перенесены из вашего блокнота, недели 10–12 считаются автоматически</p>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse min-w-[780px] text-xs">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold">
+                <th class="py-2.5 px-3 sticky left-0 bg-slate-50 z-10">Цель / Тактика</th>
+                <th class="py-2.5 px-1.5 text-center">1</th>
+                <th class="py-2.5 px-1.5 text-center">2</th>
+                <th class="py-2.5 px-1.5 text-center">3</th>
+                <th class="py-2.5 px-1.5 text-center">4</th>
+                <th class="py-2.5 px-1.5 text-center">5</th>
+                <th class="py-2.5 px-1.5 text-center">6</th>
+                <th class="py-2.5 px-1.5 text-center">7</th>
+                <th class="py-2.5 px-1.5 text-center">8</th>
+                <th class="py-2.5 px-1.5 text-center">9</th>
+                <th class="py-2.5 px-1.5 text-center bg-emerald-50/70 text-emerald-800">10</th>
+                <th class="py-2.5 px-1.5 text-center">11</th>
+                <th class="py-2.5 px-1.5 text-center">12</th>
+              </tr>
+            </thead>
+            <tbody id="overview-matrix-body" class="divide-y divide-slate-100"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: NOTES & REFLECTIONS -->
+    <section id="tab-notes" class="hidden space-y-4">
+      <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+        <h2 class="text-sm font-bold text-slate-900">Добавить заметку / вывод по неделе</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+          <select id="note-week-select" class="px-3 py-2 text-sm rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"></select>
+          <input id="note-text-input" type="text" placeholder="Например: сон в приоритет, скорректировать время тренировки..." class="sm:col-span-2 px-3 py-2 text-sm rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          <button id="btn-save-note" class="tap-btn px-4 py-2 text-sm font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white">Сохранить</button>
+        </div>
+      </div>
+
+      <div id="notes-list" class="space-y-2.5"></div>
+    </section>
+
+  </main>
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-slate-200 flex justify-around py-2 px-2">
+    <button data-tab="tracker" class="nav-tab-mobile tap-btn flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-emerald-700 font-semibold">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+      <span class="text-[11px]">Трекер</span>
+    </button>
+    <button data-tab="overview" class="nav-tab-mobile tap-btn flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-slate-500 font-medium">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+      <span class="text-[11px]">12 недель</span>
+    </button>
+    <button data-tab="notes" class="nav-tab-mobile tap-btn flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-slate-500 font-medium">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+      <span class="text-[11px]">Заметки</span>
+    </button>
+  </nav>
+
+  <!-- Modal: Add / Edit Tactic -->
+  <div id="modal-tactic" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl p-5 space-y-4 shadow-xl">
+      <div class="flex items-center justify-between">
+        <h3 id="modal-tactic-title" class="text-base font-bold text-slate-900">Новая задача</h3>
+        <button id="btn-close-tactic" class="text-slate-400 hover:text-slate-600 text-xl leading-none">&times;</button>
+      </div>
+      <div class="space-y-3">
+        <input type="hidden" id="edit-tactic-id" />
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Название</label>
+          <input id="input-tactic-name" type="text" placeholder="Например: Вода, Тренировка, Инглиш" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Время</label>
+            <input id="input-tactic-time" type="text" placeholder="08:00" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">План (дней в нед.)</label>
+            <input id="input-tactic-target" type="number" min="1" max="7" value="7" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Цель</label>
+          <select id="input-tactic-goal" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            <option value="1">Цель ① — Режим и здоровье</option>
+            <option value="2">Цель ② — Обучение (Бухучет / Инглиш)</option>
+            <option value="3">Цель ③ — Инвестиции</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex items-center justify-between pt-2">
+        <button id="btn-delete-tactic" class="hidden tap-btn px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-xl">Удалить</button>
+        <div class="flex gap-2 ml-auto">
+          <button id="btn-cancel-tactic" class="tap-btn px-4 py-2 text-sm font-medium text-slate-600 bg-slate-100 rounded-xl">Отмена</button>
+          <button id="btn-save-tactic" class="tap-btn px-4 py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl">Сохранить</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Backup / Restore -->
+  <div id="modal-backup" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl p-5 space-y-4 shadow-xl">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-bold text-slate-900">Резервная копия данных</h3>
+        <button id="btn-close-backup" class="text-slate-400 hover:text-slate-600 text-xl leading-none">&times;</button>
+      </div>
+      <p class="text-xs text-slate-500">Все отметки сохраняются автоматически в памяти браузера на вашем устройстве. Вы можете скачать JSON-копию или восстановить её на другом устройстве.</p>
+      <div class="flex flex-col gap-2">
+        <button id="btn-export-json" class="tap-btn w-full py-2.5 text-sm font-semibold rounded-xl bg-slate-900 text-white">Скачать резервную копию (JSON)</button>
+        <label class="tap-btn w-full py-2.5 text-sm font-semibold rounded-xl border border-slate-200 text-slate-700 text-center cursor-pointer hover:bg-slate-50">
+          Загрузить из файла JSON
+          <input id="input-import-json" type="file" accept=".json" class="hidden" />
+        </label>
+        <button id="btn-reset-default" class="tap-btn w-full py-2 text-xs font-medium text-rose-600 hover:bg-rose-50 rounded-xl mt-2">Сбросить к исходным данным с фото</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="hidden fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-slate-900 text-white text-xs font-medium shadow-lg"></div>
+
+  <script>
+    const STORAGE_KEY = 'twelve_week_year_y2_v6';
+    const DAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+
+    const WEEKS_META = [
+      { num: 1, dates: '14.09 – 20.09' },
+      { num: 2, dates: '21.09 – 27.09' },
+      { num: 3, dates: '28.09 – 04.10' },
+      { num: 4, dates: '05.10 – 11.10' },
+      { num: 5, dates: '12.10 – 18.10' },
+      { num: 6, dates: '19.10 – 25.10' },
+      { num: 7, dates: '26.10 – 01.11' },
+      { num: 8, dates: '02.11 – 08.11' },
+      { num: 9, dates: '09.11 – 15.11' },
+      { num: 10, dates: '16.11 – 22.11' },
+      { num: 11, dates: '23.11 – 29.11' },
+      { num: 12, dates: '30.11 – 06.12' }
+    ];
+
+    const GOALS_META = {
+      1: { name: 'Цель ① Режим и здоровье', short: 'Цель ①', color: 'emerald' },
+      2: { name: 'Цель ② Обучение', short: 'Цель ②', color: 'indigo' },
+      3: { name: 'Цель ③ Инвестиции', short: 'Цель ③', color: 'amber' }
+    };
+
+    function createDefaultState() {
+      return {
+        selectedWeek: 10,
+        selectedDay: 3, // Чт (Nov 19, 2026)
+        viewMode: 'day',
+        goalFilter: 'all',
+        tactics: [
+          { id: 't_water', name: 'Вода', time: '06:00', goal: 1, days: [0,1,2,3,4,5,6] },
+          { id: 't_plan', name: 'Планирование недели', time: '08:00', goal: 1, days: [0] },
+          { id: 't_invest', name: 'Инвестиции', time: '08:00', goal: 3, days: [3] },
+          { id: 't_exercise', name: 'Зарядка', time: '08:00', goal: 1, days: [0,1,2,3,4,5,6] },
+          { id: 't_parable', name: 'Притча', time: '09:00', goal: 1, days: [0,1,2,3,4] },
+          { id: 't_breakfast', name: 'Завтрак', time: '09:00', goal: 1, days: [0,1,2,3,4,5,6] },
+          { id: 't_lunch', name: 'Обед', time: '12:00', goal: 1, days: [0,1,2,3,4,5,6] },
+          { id: 't_study', name: 'Учёба', time: '13:00', goal: 2, days: [0,2,3,4] },
+          { id: 't_dinner', name: 'Ужин', time: '18:00', goal: 1, days: [0,1,2,3,4,5,6] },
+          { id: 't_cook', name: 'Приготовление еды', time: '19:00', goal: 1, cycleDays: 3, cycleOffset: 2 },
+          { id: 't_workout', name: 'Тренировки', time: '20:00', goal: 1, days: [0,1,2,3,4] },
+          { id: 't_steps', name: '10 000 шагов', time: '22:00', goal: 1, days: [0,1,2,3,4,5,6] },
+          { id: 't_sleep', name: 'Сон до 23:00', time: '23:00', goal: 1, days: [0,1,2,3,4,5,6] }
+        ],
+        // Status: 0 = pending/empty, 1 = done (green), -1 = missed (X)
+        logs: {
+          1: {
+            t_invest:   [0, 0, 0, 1, 0, 0, 0],
+            t_study:    [-1, 0, -1, 1, 1, 0, 0],
+            t_water:    [1, 1, 1, 1, 1, 1, 1],
+            t_plan:     [1, 0, 0, 0, 0, 0, 0],
+            t_exercise: [1, 1, 1, 1, 1, 1, 1],
+            t_parable:  [1, -1, 1, 1, 1, 0, 0],
+            t_breakfast:[1, 1, 1, 1, 1, 1, 1],
+            t_lunch:    [1, -1, 1, 1, 1, -1, 1],
+            t_dinner:   [1, -1, -1, 1, 1, -1, 1],
+            t_cook:     [0, 1, 0, 0, 1, 0, 0],
+            t_workout:  [1, -1, -1, -1, 1, 0, 0],
+            t_steps:    [1, 1, -1, 1, 1, 1, 1],
+            t_sleep:    [1, -1, -1, -1, -1, 1, -1]
+          },
+          2: {
+            t_invest:   [0, 0, 0, 1, 0, 0, 0],
+            t_study:    [1, 0, 1, 1, 1, 0, 0],
+            t_water:    [1, 1, 1, 1, 1, 1, 1],
+            t_plan:     [1, 0, 0, 0, 0, 0, 0],
+            t_exercise: [1, 1, 1, 1, -1, 1, 1],
+            t_parable:  [1, 1, 1, 1, 1, 0, 0],
+            t_breakfast:[1, 1, 1, 1, 1, -1, 1],
+            t_lunch:    [1, 1, 1, 1, 1, -1, 0],
+            t_dinner:   [1, 1, 1, 1, 1, -1, 1],
+            t_cook:     [0, 0, 0, 1, -1, 1, 0],
+            t_workout:  [1, -1, 1, 0, 0, 0, 0],
+            t_steps:    [1, 1, 1, 1, 1, 1, 1],
+            t_sleep:    [1, 1, 1, 1, -1, -1, 1]
+          },
+          3: {
+            t_invest:   [0, 0, 0, 1, 0, 0, 0],
+            t_study:    [1, 0, 1, 1, -1, 0, 0],
+            t_water:    [1, 1, 1, 1, 1, 1, 1],
+            t_plan:     [1, 0, 0, 0, 0, 0, 0],
+            t_exercise: [1, 1, 1, 1, 1, 1, 1],
+            t_parable:  [1, 1, 1, 1, 1, 0, 0],
+            t_breakfast:[1, 1, 1, 1, 1, 1, 1],
+            t_lunch:    [1, 1, 1, 1, 1, 1, 1],
+            t_dinner:   [1, 1, 1, 1, 1, 1, 1],
+            t_cook:     [1, 0, 0, 1, 0, 0, 1],
+            t_workout:  [1, 0, -1, 1, -1, 0, 0],
+            t_steps:    [1, 1, 1, 1, 1, 1, 1],
+            t_sleep:    [1, 1, -1, -1, 1, -1, -1]
+          },
+          4: {
+            t_invest:   [0, 0, 0, 1, 0, 0, 0],
+            t_study:    [-1, 0, 1, -1, -1, 0, 0],
+            t_water:    [1, 1, 1, 1, 1, 1, 1],
+            t_plan:     [1, 0, 0, 0, 0, 0, 0],
+            t_exercise: [1, 1, 1, 1, 1, 1, 1],
+            t_parable:  [1, 1, 1, -1, 1, 0, 0],
+            t_breakfast:[1, 1, 1, 1, 1, 1, 1],
+            t_lunch:    [1, 1, 1, 1, -1, 1, 1],
+            t_dinner:   [1, 1, 1, 1, -1, 1, -1],
+            t_cook:     [1, 0, 0, -1, 1, 0, 0],
+            t_workout:  [1, 1, 1, -1, 1, 0, 0],
+            t_steps:    [1, 1, 1, 1, 1, 1, 1],
+            t_sleep:    [1, -1, -1, 1, -1, -1, 1]
+          },
+          5: {
+            t_invest:   [0, 0, 0, 1, 0, 0, 0],
+            t_study:    [-1, 0, -1, -1, -1, 0, 0],
+            t_water:    [1, 1, 1, 1, 1, 1, 1],
+            t_plan:     [1, 0, 0, 0, 0, 0, 0],
+            t_exercise: [1, 1, 1, 1, 1, 1, 1],
+            t_parable:  [1, 1, 1, 1, -1, 0, 0],
+            t_breakfast:[1, 1, 1, 1, 1, 1, 1],
+            t_lunch:    [1, 1, 1, 1, 1, 1, 1],
+            t_dinner:   [1, 1, 1, 1, 1, 1, 1],
+            t_cook:     [0, 0, 0, 1, 0, 0, 0],
+            t_workout:  [1, 1, 1, 0, 1, 0, 0],
+            t_steps:    [1, 1, 1, 1, 1, 1, -1],
+            t_sleep:    [-1, -1, 1, -1, 1, -1, -1]
+          },
+          6: {
+            t_invest:   [0, 0, 0, 0, 0, 0, 0],
+            t_study:    [-1, 0, -1, -1, -1, 0, 0],
+            t_water:    [1, 1, 1, -1, 1, 1, -1],
+            t_plan:     [0, 0, 0, 0, 0, 0, 0],
+            t_exercise: [1, 1, 1, 1, -1, 1, 1],
+            t_parable:  [-1, -1, -1, -1, -1, 0, 0],
+            t_breakfast:[1, 1, 1, 1, -1, 1, 1],
+            t_lunch:    [1, 1, 1, 1, -1, -1, -1],
+            t_dinner:   [1, 1, 1, 1, -1, -1, -1],
+            t_cook:     [0, 0, 0, 0, 0, 0, 0],
+            t_workout:  [0, -1, -1, -1, -1, 0, 0],
+            t_steps:    [1, 1, 1, 1, 1, 1, -1],
+            t_sleep:    [-1, 1, 1, 1, 1, 1, 1]
+          },
+          7: {
+            t_invest:   [0, 0, 0, 0, 0, 0, 0],
+            t_study:    [1, 0, 1, 1, 1, 0, 0],
+            t_water:    [1, 1, 1, 1, 1, 1, 1],
+            t_plan:     [1, 0, 0, 0, 0, 0, 0],
+            t_exercise: [1, 1, 1, 1, -1, 1, 1],
+            t_parable:  [-1, 0, -1, -1, -1, 0, 0],
+            t_breakfast:[1, 1, 1, 1, 1, 1, 1],
+            t_lunch:    [1, 1, 1, 1, 1, 1, 1],
+            t_dinner:   [1, 1, 1, 1, 1, 1, 1],
+            t_cook:     [0, 0, 0, 0, 0, 0, 0],
+            t_workout:  [1, -1, 1, -1, -1, 0, 0],
+            t_steps:    [1, 1, 1, 1, 1, 1, 1],
+            t_sleep:    [1, -1, -1, -1, -1, -1, -1]
+          },
+          8: {
+            t_invest:   [0, 0, 0, 0, 0, 0, 0],
+            t_study:    [-1, 0, 1, 1, 0, 0, 0],
+            t_water:    [1, 1, 1, 1, 1, 1, 1],
+            t_plan:     [0, 0, 0, 0, 0, 0, 0],
+            t_exercise: [1, -1, -1, 1, 1, 1, 1],
+            t_parable:  [-1, -1, -1, 1, -1, 0, 0],
+            t_breakfast:[1, 1, 1, 1, 1, 1, 1],
+            t_lunch:    [1, 1, 1, 1, 1, 1, 1],
+            t_dinner:   [1, 1, 1, 1, 1, 1, 1],
+            t_cook:     [0, 0, 0, 0, 0, 0, 0],
+            t_workout:  [-1, -1, -1, 1, -1, 0, 0],
+            t_steps:    [1, 1, 1, 1, 1, 1, 1],
+            t_sleep:    [1, 1, -1, -1, -1, -1, -1]
+          },
+          9: {
+            t_invest:   [0, 0, 0, 0, 0, 0, 0],
+            t_study:    [1, 0, 1, 1, 1, 0, 0],
+            t_water:    [1, 1, 1, 1, 1, 1, 1],
+            t_plan:     [1, 0, 0, 0, 0, 0, 0],
+            t_exercise: [1, 1, 1, 1, 1, 1, 1],
+            t_parable:  [1, 1, 1, -1, 0, 0, 0],
+            t_breakfast:[1, 1, 1, 1, 1, 1, 1],
+            t_lunch:    [1, 1, 1, 1, 1, 1, 1],
+            t_dinner:   [1, 1, 1, 1, 1, 1, 1],
+            t_cook:     [1, 0, 1, 1, 0, 1, 1],
+            t_workout:  [0, 1, 0, 1, -1, 0, 0],
+            t_steps:    [1, 1, 1, -1, 1, 1, 1],
+            t_sleep:    [1, -1, -1, -1, -1, -1, 1]
+          },
+          10: {
+            t_invest:   [0, 0, 0, 0, 0, 0, 0],
+            t_study:    [1, 0, -1, 0, 0, 0, 0],
+            t_water:    [1, 1, 1, 1, 0, 0, 0],
+            t_plan:     [1, 0, 0, 0, 0, 0, 0],
+            t_exercise: [1, 1, 1, 1, 0, 0, 0],
+            t_parable:  [-1, -1, -1, 0, 0, 0, 0],
+            t_breakfast:[1, 1, 1, 1, 0, 0, 0],
+            t_lunch:    [1, 1, 1, 0, 0, 0, 0],
+            t_dinner:   [1, 1, 1, 0, 0, 0, 0],
+            t_cook:     [0, 0, 1, 0, 0, 0, 0],
+            t_workout:  [-1, -1, 1, 0, 0, 0, 0],
+            t_steps:    [1, 1, 1, 0, 0, 0, 0],
+            t_sleep:    [-1, -1, -1, 0, 0, 0, 0]
+          }
+        },
+        // Historical weekly % from IMG_1226 for Weeks 1-9
+        historicalWeeks: {
+          goal1: { 1: 78, 2: 91, 3: 93, 4: 85, 5: 90, 6: null, 7: null, 8: 100, 9: 100 },
+          goal2: { 1: 50, 2: 80, 3: 60, 4: 60, 5: 0, 6: null, 7: null, 8: 10, 9: 10 },
+          goal3: { 1: 100, 2: 100, 3: 100, 4: 100, 5: 100, 6: null, 7: null, 8: 10, 9: 10 },
+          tactics: {
+            t_water:    { 1: 100, 2: 100, 3: 100, 4: 100, 5: 100, 8: 100, 9: 100 },
+            t_exercise: { 1: 100, 2: 85,  3: 100, 4: 100, 5: 100, 8: 70,  9: 100 },
+            t_breakfast:{ 1: 100, 2: 85,  3: 100, 4: 100, 5: 100, 8: 100, 9: 100 },
+            t_lunch:    { 1: 70,  2: 85,  3: 100, 4: 85,  5: 100, 8: 100, 9: 100 },
+            t_dinner:   { 1: 57,  2: 85,  3: 100, 4: 80,  5: 100, 8: 100, 9: 100 },
+            t_grocery:  { 1: 100, 2: 100, 3: 100, 4: 100, 5: 100, 8: 100, 9: 100 },
+            t_cook:     { 1: 100, 2: 100, 3: 100, 4: 71,  5: 100, 8: 100, 9: 100 },
+            t_workout:  { 1: 40,  2: 100, 3: 80,  4: 80,  5: 100, 8: 80,  9: 80 },
+            t_steps:    { 1: 85,  2: 100, 3: 100, 4: 100, 5: 85,  8: 100, 9: 85 },
+            t_sleep:    { 1: 28,  2: 71,  3: 42,  4: 42,  5: 28,  8: 30,  9: 42 },
+            t_parable:  { 1: 80,  2: 100, 3: 100, 4: 80,  5: 80,  8: 20,  9: 0 },
+            t_accounting:{ 1: 0,  2: 0,   3: 0,   4: 0,   5: 0 },
+            t_english:  { 1: 100, 2: 80,  3: 60,  4: 60,  5: 0 },
+            t_invest:   { 1: 100, 2: 100, 3: 100, 4: 100, 5: 100, 8: 10, 9: 10 }
+          }
+        },
+        notes: [
+          { id: 'n1', week: 5, text: 'Усталость на работе + отсутствие цели и понимания куда иду.' },
+          { id: 'n2', week: 8, text: 'Сон → в приоритет.' }
+        ]
+      };
+    }
+
+    let state = loadState();
+    let chartInstance = null;
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) return JSON.parse(raw);
+      } catch (e) {}
+      return createDefaultState();
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {}
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => el.classList.add('hidden'), 2200);
+    }
+
+    function getWeekLog(weekNum, tacticId) {
+      if (!state.logs[weekNum]) state.logs[weekNum] = {};
+      if (!state.logs[weekNum][tacticId]) state.logs[weekNum][tacticId] = [0, 0, 0, 0, 0, 0, 0];
+      return state.logs[weekNum][tacticId];
+    }
+
+    function isScheduledOn(tactic, weekNum, dayIdx) {
+      if (tactic.cycleDays) {
+        const globalDay = (weekNum - 1) * 7 + dayIdx;
+        return globalDay % tactic.cycleDays === (tactic.cycleOffset ?? 0);
+      }
+      if (Array.isArray(tactic.days)) {
+        return tactic.days.includes(dayIdx);
+      }
+      return true;
+    }
+
+    function getTacticWeekTarget(tactic, weekNum) {
+      let count = 0;
+      for (let d = 0; d < 7; d++) {
+        if (isScheduledOn(tactic, weekNum, d)) count++;
+      }
+      return Math.max(1, count || tactic.targetPerWeek || 7);
+    }
+
+    function getScheduleLabel(tactic) {
+      if (tactic.cycleDays) return 'Раз в 3 дня';
+      if (Array.isArray(tactic.days)) {
+        if (tactic.days.length === 7) return 'Ежедневно';
+        return tactic.days.map(d => DAYS[d]).join(', ');
+      }
+      return 'Ежедневно';
+    }
+
+    function calcTacticWeekPct(weekNum, tactic) {
+      const log = getWeekLog(weekNum, tactic.id);
+      let done = 0;
+      for (let d = 0; d < 7; d++) {
+        if (isScheduledOn(tactic, weekNum, d) && log[d] === 1) done++;
+      }
+      const target = getTacticWeekTarget(tactic, weekNum);
+      return Math.min(100, Math.round((done / target) * 100));
+    }
+
+    function calcWeekScore(weekNum, goalFilter = null) {
+      const list = goalFilter ? state.tactics.filter(t => t.goal === goalFilter) : state.tactics;
+      if (!list.length) return { done: 0, target: 0, pct: 0 };
+      let totalDone = 0;
+      let totalTarget = 0;
+      list.forEach(t => {
+        const log = getWeekLog(weekNum, t.id);
+        let done = 0;
+        for (let d = 0; d < 7; d++) {
+          if (isScheduledOn(t, weekNum, d) && log[d] === 1) done++;
+        }
+        const target = getTacticWeekTarget(t, weekNum);
+        totalDone += Math.min(done, target);
+        totalTarget += target;
+      });
+      const pct = totalTarget > 0 ? Math.round((totalDone / totalTarget) * 100) : 0;
+      return { done: totalDone, target: totalTarget, pct };
+    }
+
+    function getGoalWeekPct(weekNum, goalNum) {
+      const hasLogs = state.logs[weekNum] && Object.values(state.logs[weekNum]).some(arr => arr.some(v => v !== 0));
+      if (weekNum <= 9 && !hasLogs) {
+        const key = 'goal' + goalNum;
+        return state.historicalWeeks[key]?.[weekNum] ?? null;
+      }
+      return calcWeekScore(weekNum, goalNum).pct;
+    }
+
+    function getOverallWeekPct(weekNum) {
+      const hasLogs = state.logs[weekNum] && Object.values(state.logs[weekNum]).some(arr => arr.some(v => v !== 0));
+      if (weekNum <= 9 && !hasLogs) {
+        const g1 = state.historicalWeeks.goal1[weekNum];
+        const g2 = state.historicalWeeks.goal2[weekNum];
+        const g3 = state.historicalWeeks.goal3[weekNum];
+        const vals = [g1, g2, g3].filter(v => v !== null && v !== undefined);
+        if (!vals.length) return null;
+        return Math.round(vals.reduce((a, b) => a + b, 0) / vals.length);
+      }
+      return calcWeekScore(weekNum).pct;
+    }
+
+    function cycleStatus(weekNum, tacticId, dayIdx) {
+      const log = getWeekLog(weekNum, tacticId);
+      const cur = log[dayIdx];
+      log[dayIdx] = cur === 0 ? 1 : cur === 1 ? -1 : 0;
+      saveState();
+      renderAll();
+    }
+
+    // --- RENDERING ---
+    function renderAll() {
+      renderWeekHeaderAndPills();
+      renderDayView();
+      renderGridView();
+      renderOverview();
+      renderNotes();
+    }
+
+    function renderWeekHeaderAndPills() {
+      const wMeta = WEEKS_META.find(w => w.num === state.selectedWeek) || WEEKS_META[9];
+      document.getElementById('current-week-badge').textContent = `Неделя ${wMeta.num}`;
+      document.getElementById('current-week-dates').textContent = wMeta.dates;
+
+      const score = calcWeekScore(state.selectedWeek);
+      document.getElementById('week-score-pct').textContent = `${score.pct}%`;
+      document.getElementById('week-score-fraction').textContent = `${score.done}/${score.target}`;
+
+      const ring = document.getElementById('week-score-ring');
+      ring.setAttribute('stroke-dasharray', `${score.pct}, 100`);
+
+      const statusEl = document.getElementById('week-score-status');
+      if (score.pct >= 85) {
+        statusEl.textContent = 'Отличный темп! Выше порога 85%';
+        statusEl.className = 'text-xs mt-1 font-medium text-emerald-600';
+      } else if (score.pct >= 65) {
+        statusEl.textContent = 'Хорошо, до цели 85% осталось немного';
+        statusEl.className = 'text-xs mt-1 font-medium text-amber-600';
+      } else {
+        statusEl.textContent = 'В процессе недели • цель ≥ 85%';
+        statusEl.className = 'text-xs mt-1 font-medium text-slate-500';
+      }
+
+      const pillsContainer = document.getElementById('week-pills');
+      pillsContainer.innerHTML = WEEKS_META.map(w => {
+        const active = w.num === state.selectedWeek;
+        return `<button data-week="${w.num}" class="week-pill-btn tap-btn flex-shrink-0 px-3 py-1.5 rounded-xl text-xs font-semibold border ${
+          active ? 'bg-slate-900 text-white border-slate-900' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+        }">Н${w.num}</button>`;
+      }).join('');
+
+      pillsContainer.querySelectorAll('.week-pill-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.selectedWeek = Number(btn.dataset.week);
+          saveState();
+          renderAll();
+        });
+      });
+
+      // Goal filter buttons
+      document.querySelectorAll('.goal-filter-btn').forEach(btn => {
+        const isSelected = btn.dataset.goalFilter === String(state.goalFilter);
+        btn.className = `goal-filter-btn tap-btn px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap ${
+          isSelected ? 'bg-slate-900 text-white' : 'bg-white border border-slate-200 text-slate-700'
+        }`;
+      });
+    }
+
+    function getFilteredTactics() {
+      if (state.goalFilter === 'all') return state.tactics;
+      return state.tactics.filter(t => t.goal === Number(state.goalFilter));
+    }
+
+    function renderDayView() {
+      const dayPills = document.getElementById('day-pills');
+      dayPills.innerHTML = DAYS.map((d, idx) => {
+        const active = idx === state.selectedDay;
+        return `<button data-day="${idx}" class="day-pill-btn tap-btn py-2 rounded-xl text-xs font-bold ${
+          active ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'
+        }">${d}</button>`;
+      }).join('');
+
+      dayPills.querySelectorAll('.day-pill-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.selectedDay = Number(btn.dataset.day);
+          saveState();
+          renderDayView();
+        });
+      });
+
+      const list = getFilteredTactics().filter(t => isScheduledOn(t, state.selectedWeek, state.selectedDay));
+      const container = document.getElementById('day-tasks-list');
+      let doneCount = 0;
+
+      container.innerHTML = list.map(t => {
+        const log = getWeekLog(state.selectedWeek, t.id);
+        const status = log[state.selectedDay];
+        if (status === 1) doneCount++;
+
+        let weekDone = 0;
+        for (let d = 0; d < 7; d++) {
+          if (isScheduledOn(t, state.selectedWeek, d) && log[d] === 1) weekDone++;
+        }
+        const weekTarget = getTacticWeekTarget(t, state.selectedWeek);
+        const schedLabel = getScheduleLabel(t);
+
+        let cardStyle = 'bg-white border-slate-200';
+        let iconHtml = '<span class="w-7 h-7 rounded-full border-2 border-slate-300 flex items-center justify-center text-slate-300 text-xs">•</span>';
+        if (status === 1) {
+          cardStyle = 'bg-emerald-50/70 border-emerald-300';
+          iconHtml = '<span class="w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center text-sm font-bold shadow-xs">✓</span>';
+        } else if (status === -1) {
+          cardStyle = 'bg-rose-50/60 border-rose-200';
+          iconHtml = '<span class="w-7 h-7 rounded-full bg-rose-500 text-white flex items-center justify-center text-xs font-bold">✗</span>';
+        }
+
+        return `
+          <div class="flex items-center justify-between gap-3 p-3 rounded-2xl border ${cardStyle} shadow-xs">
+            <button data-tactic="${t.id}" class="task-toggle-btn tap-btn flex-1 flex items-center gap-3 text-left">
+              ${iconHtml}
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2">
+                  <span class="text-[11px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">${t.time || '—'}</span>
+                  <span class="text-sm font-semibold text-slate-900 truncate ${status === 1 ? 'line-through text-slate-500' : ''}">${t.name}</span>
+                </div>
+                <div class="flex items-center gap-2 mt-1">
+                  <span class="text-[11px] text-slate-500">${schedLabel}</span>
+                  <span class="text-[11px] text-slate-400">•</span>
+                  <span class="text-[11px] font-medium text-slate-600">За неделю: ${weekDone}/${weekTarget}</span>
+                </div>
+              </div>
+            </button>
+            <button data-edit="${t.id}" class="edit-tactic-btn tap-btn p-2 text-slate-400 hover:text-slate-700" title="Редактировать">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01"/></svg>
+            </button>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('day-progress-text').textContent = `${doneCount}/${list.length} сегодня`;
+
+      container.querySelectorAll('.task-toggle-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          cycleStatus(state.selectedWeek, btn.dataset.tactic, state.selectedDay);
+        });
+      });
+
+      container.querySelectorAll('.edit-tactic-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openTacticModal(btn.dataset.edit);
+        });
+      });
+    }
+
+    function renderGridView() {
+      const tbody = document.getElementById('grid-table-body');
+      const list = getFilteredTactics();
+
+      tbody.innerHTML = list.map(t => {
+        const log = getWeekLog(state.selectedWeek, t.id);
+        const pct = calcTacticWeekPct(state.selectedWeek, t);
+        const cells = log.map((val, dIdx) => {
+          if (!isScheduledOn(t, state.selectedWeek, dIdx)) {
+            return `<td class="py-1.5 px-1 text-center">
+              <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-300 text-xs">—</span>
+            </td>`;
+          }
+          let cls = 'bg-slate-100 text-slate-400';
+          let sym = '•';
+          if (val === 1) { cls = 'bg-emerald-500 text-white shadow-xs'; sym = '✓'; }
+          else if (val === -1) { cls = 'bg-rose-100 text-rose-600'; sym = '✗'; }
+          return `<td class="py-1.5 px-1 text-center">
+            <button data-tactic="${t.id}" data-day="${dIdx}" class="grid-cell-btn tap-btn w-8 h-8 rounded-lg font-bold text-xs ${cls}">${sym}</button>
+          </td>`;
+        }).join('');
+
+        return `<tr class="hover:bg-slate-50/80">
+          <td class="py-2 px-3 text-xs font-medium text-slate-500">${t.time || '—'}</td>
+          <td class="py-2 px-2">
+            <button data-edit="${t.id}" class="grid-edit-btn text-left font-semibold text-slate-800 hover:text-emerald-700 text-xs sm:text-sm">${t.name}</button>
+          </td>
+          ${cells}
+          <td class="py-2 px-3 text-right text-xs font-bold ${pct >= 85 ? 'text-emerald-600' : 'text-slate-600'}">${pct}%</td>
+        </tr>`;
+      }).join('');
+
+      tbody.querySelectorAll('.grid-cell-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          cycleStatus(state.selectedWeek, btn.dataset.tactic, Number(btn.dataset.day));
+        });
+      });
+
+      tbody.querySelectorAll('.grid-edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => openTacticModal(btn.dataset.edit));
+      });
+    }
+
+    function renderOverview() {
+      // KPI Cards for 3 Goals (current selected week)
+      const kpiContainer = document.getElementById('goal-kpi-cards');
+      kpiContainer.innerHTML = [1, 2, 3].map(g => {
+        const meta = GOALS_META[g];
+        const pct = getGoalWeekPct(state.selectedWeek, g) ?? 0;
+        const barColors = {
+          emerald: 'bg-emerald-500',
+          indigo: 'bg-indigo-500',
+          amber: 'bg-amber-500'
+        };
+        return `
+          <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-700">${meta.name}</span>
+              <span class="text-base font-extrabold text-slate-900">${pct}%</span>
+            </div>
+            <div class="w-full h-2 bg-slate-100 rounded-full mt-2.5 overflow-hidden">
+              <div class="h-full rounded-full ${barColors[meta.color]}" style="width: ${pct}%"></div>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1.5">Неделя ${state.selectedWeek}</p>
+          </div>
+        `;
+      }).join('');
+
+      // 12-Week Matrix
+      const matrixBody = document.getElementById('overview-matrix-body');
+      let rowsHtml = '';
+
+      [1, 2, 3].forEach(g => {
+        const meta = GOALS_META[g];
+        let goalCells = '';
+        for (let w = 1; w <= 12; w++) {
+          const val = getGoalWeekPct(w, g);
+          const isCur = w === state.selectedWeek;
+          goalCells += `<td class="py-2 px-1.5 text-center font-bold ${isCur ? 'bg-emerald-50/70 text-emerald-800' : ''}">${val !== null ? val + '%' : '—'}</td>`;
+        }
+        rowsHtml += `<tr class="bg-slate-50/90 font-bold text-slate-900">
+          <td class="py-2 px-3 sticky left-0 bg-slate-50 z-10">${meta.name}</td>
+          ${goalCells}
+        </tr>`;
+
+        state.tactics.filter(t => t.goal === g).forEach(t => {
+          let tCells = '';
+          for (let w = 1; w <= 12; w++) {
+            const hasLogs = state.logs[w] && state.logs[w][t.id] && state.logs[w][t.id].some(v => v !== 0);
+            let val = null;
+            if (hasLogs) {
+              val = calcTacticWeekPct(w, t);
+            } else if (w <= 9) {
+              val = state.historicalWeeks.tactics[t.id]?.[w] ?? null;
+            }
+            const isCur = w === state.selectedWeek;
+            let txtColor = 'text-slate-500';
+            if (val !== null) {
+              txtColor = val >= 85 ? 'text-emerald-600 font-semibold' : val === 0 ? 'text-rose-500' : 'text-slate-700';
+            }
+            tCells += `<td class="py-1.5 px-1.5 text-center ${txtColor} ${isCur ? 'bg-emerald-50/40' : ''}">${val !== null ? val : '·'}</td>`;
+          }
+          rowsHtml += `<tr class="hover:bg-slate-50/60">
+            <td class="py-1.5 px-3 pl-5 sticky left-0 bg-white z-10 text-slate-700">${t.name}</td>
+            ${tCells}
+          </tr>`;
+        });
+      });
+
+      matrixBody.innerHTML = rowsHtml;
+
+      // Render Chart.js
+      const labels = WEEKS_META.map(w => `Н${w.num}`);
+      const g1Data = WEEKS_META.map(w => getGoalWeekPct(w.num, 1));
+      const overallData = WEEKS_META.map(w => getOverallWeekPct(w.num));
+      const targetLine = WEEKS_META.map(() => 85);
+
+      const ctx = document.getElementById('weeksChart').getContext('2d');
+      if (chartInstance) chartInstance.destroy();
+      chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Цель ① (%)',
+              data: g1Data,
+              borderColor: '#10b981',
+              backgroundColor: 'rgba(16, 185, 129, 0.12)',
+              fill: true,
+              tension: 0.3,
+              spanGaps: true,
+              pointRadius: 4
+            },
+            {
+              label: 'Общий %',
+              data: overallData,
+              borderColor: '#0f172a',
+              borderWidth: 2,
+              tension: 0.3,
+              spanGaps: true,
+              pointRadius: 3
+            },
+            {
+              label: 'Порог 85%',
+              data: targetLine,
+              borderColor: '#f59e0b',
+              borderDash: [5, 5],
+              borderWidth: 1.5,
+              pointRadius: 0
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { min: 0, max: 100, ticks: { callback: v => v + '%' } }
+          },
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
+          }
+        }
+      });
+    }
+
+    function renderNotes() {
+      const sel = document.getElementById('note-week-select');
+      if (!sel.options.length) {
+        sel.innerHTML = WEEKS_META.map(w => `<option value="${w.num}">Неделя ${w.num} (${w.dates})</option>`).join('');
+        sel.value = String(state.selectedWeek);
+      }
+
+      const listEl = document.getElementById('notes-list');
+      if (!state.notes.length) {
+        listEl.innerHTML = '<p class="text-sm text-slate-400 text-center py-6">Пока нет заметок</p>';
+        return;
+      }
+
+      const sorted = [...state.notes].sort((a, b) => b.week - a.week);
+      listEl.innerHTML = sorted.map(n => {
+        const w = WEEKS_META.find(x => x.num === n.week);
+        return `
+          <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex items-start justify-between gap-3">
+            <div>
+              <span class="inline-block px-2 py-0.5 text-[11px] font-bold rounded-full bg-slate-100 text-slate-700 mb-1.5">Неделя ${n.week} • ${w ? w.dates : ''}</span>
+              <p class="text-sm text-slate-800">${n.text}</p>
+            </div>
+            <button data-note-del="${n.id}" class="del-note-btn tap-btn text-slate-400 hover:text-rose-600 text-xs font-medium">Удалить</button>
+          </div>
+        `;
+      }).join('');
+
+      listEl.querySelectorAll('.del-note-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.notes = state.notes.filter(n => n.id !== btn.dataset.noteDel);
+          saveState();
+          renderNotes();
+          showToast('Заметка удалена');
+        });
+      });
+    }
+
+    // --- TABS & MODALS ---
+    function switchTab(tabName) {
+      ['tracker', 'overview', 'notes'].forEach(t => {
+        document.getElementById(`tab-${t}`).classList.toggle('hidden', t !== tabName);
+      });
+
+      document.querySelectorAll('.nav-tab-desktop').forEach(btn => {
+        const active = btn.dataset.tab === tabName;
+        btn.className = `nav-tab-desktop py-2.5 text-sm border-b-2 ${
+          active ? 'font-semibold border-emerald-600 text-emerald-700' : 'font-medium border-transparent text-slate-500 hover:text-slate-800'
+        }`;
+      });
+
+      document.querySelectorAll('.nav-tab-mobile').forEach(btn => {
+        const active = btn.dataset.tab === tabName;
+        btn.className = `nav-tab-mobile tap-btn flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl ${
+          active ? 'text-emerald-700 font-semibold' : 'text-slate-500 font-medium'
+        }`;
+      });
+
+      if (tabName === 'overview') renderOverview();
+    }
+
+    function openTacticModal(tacticId = null) {
+      const modal = document.getElementById('modal-tactic');
+      const delBtn = document.getElementById('btn-delete-tactic');
+      if (tacticId) {
+        const t = state.tactics.find(x => x.id === tacticId);
+        if (!t) return;
+        document.getElementById('modal-tactic-title').textContent = 'Редактировать задачу';
+        document.getElementById('edit-tactic-id').value = t.id;
+        document.getElementById('input-tactic-name').value = t.name;
+        document.getElementById('input-tactic-time').value = t.time || '';
+        document.getElementById('input-tactic-target').value = t.targetPerWeek || 7;
+        document.getElementById('input-tactic-goal').value = String(t.goal);
+        delBtn.classList.remove('hidden');
+      } else {
+        document.getElementById('modal-tactic-title').textContent = 'Новая задача';
+        document.getElementById('edit-tactic-id').value = '';
+        document.getElementById('input-tactic-name').value = '';
+        document.getElementById('input-tactic-time').value = '';
+        document.getElementById('input-tactic-target').value = 7;
+        document.getElementById('input-tactic-goal').value = '1';
+        delBtn.classList.add('hidden');
+      }
+      modal.classList.remove('hidden');
+    }
+
+    function closeTacticModal() {
+      document.getElementById('modal-tactic').classList.add('hidden');
+    }
+
+    // --- EVENT LISTENERS ---
+    document.querySelectorAll('[data-tab]').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+
+    document.querySelectorAll('.goal-filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.goalFilter = btn.dataset.goalFilter;
+        saveState();
+        renderAll();
+      });
+    });
+
+    document.getElementById('mode-day').addEventListener('click', () => {
+      state.viewMode = 'day';
+      document.getElementById('view-day-container').classList.remove('hidden');
+      document.getElementById('view-grid-container').classList.add('hidden');
+      document.getElementById('mode-day').className = 'tap-btn px-2.5 py-1 text-xs font-semibold rounded-md bg-white text-slate-900 shadow-sm';
+      document.getElementById('mode-grid').className = 'tap-btn px-2.5 py-1 text-xs font-medium rounded-md text-slate-600';
+      saveState();
+    });
+
+    document.getElementById('mode-grid').addEventListener('click', () => {
+      state.viewMode = 'grid';
+      document.getElementById('view-day-container').classList.add('hidden');
+      document.getElementById('view-grid-container').classList.remove('hidden');
+      document.getElementById('mode-grid').className = 'tap-btn px-2.5 py-1 text-xs font-semibold rounded-md bg-white text-slate-900 shadow-sm';
+      document.getElementById('mode-day').className = 'tap-btn px-2.5 py-1 text-xs font-medium rounded-md text-slate-600';
+      saveState();
+    });
+
+    document.getElementById('btn-add-tactic').addEventListener('click', () => openTacticModal(null));
+    document.getElementById('btn-close-tactic').addEventListener('click', closeTacticModal);
+    document.getElementById('btn-cancel-tactic').addEventListener('click', closeTacticModal);
+
+    document.getElementById('btn-save-tactic').addEventListener('click', () => {
+      const id = document.getElementById('edit-tactic-id').value;
+      const name = document.getElementById('input-tactic-name').value.trim();
+      if (!name) { showToast('Введите название задачи'); return; }
+      const time = document.getElementById('input-tactic-time').value.trim() || '—';
+      const targetPerWeek = Math.min(7, Math.max(1, Number(document.getElementById('input-tactic-target').value) || 7));
+      const goal = Number(document.getElementById('input-tactic-goal').value) || 1;
+
+      if (id) {
+        const t = state.tactics.find(x => x.id === id);
+        if (t) { t.name = name; t.time = time; t.targetPerWeek = targetPerWeek; t.goal = goal; }
+        showToast('Задача обновлена');
+      } else {
+        const days = Array.from({ length: targetPerWeek }, (_, i) => i);
+        state.tactics.push({ id: 't_' + Date.now(), name, time, goal, targetPerWeek, days });
+        showToast('Задача добавлена');
+      }
+      saveState();
+      closeTacticModal();
+      renderAll();
+    });
+
+    document.getElementById('btn-delete-tactic').addEventListener('click', () => {
+      const id = document.getElementById('edit-tactic-id').value;
+      state.tactics = state.tactics.filter(t => t.id !== id);
+      saveState();
+      closeTacticModal();
+      renderAll();
+      showToast('Задача удалена');
+    });
+
+    document.getElementById('btn-save-note').addEventListener('click', () => {
+      const week = Number(document.getElementById('note-week-select').value);
+      const text = document.getElementById('note-text-input').value.trim();
+      if (!text) { showToast('Напишите текст заметки'); return; }
+      state.notes.push({ id: 'n_' + Date.now(), week, text });
+      document.getElementById('note-text-input').value = '';
+      saveState();
+      renderNotes();
+      showToast('Заметка сохранена');
+    });
+
+    // Backup Modal
+    document.getElementById('btn-backup').addEventListener('click', () => {
+      document.getElementById('modal-backup').classList.remove('hidden');
+    });
+    document.getElementById('btn-close-backup').addEventListener('click', () => {
+      document.getElementById('modal-backup').classList.add('hidden');
+    });
+
+    document.getElementById('btn-export-json').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = '12_weeks_backup.json';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Копия скачана');
+    });
+
+    document.getElementById('input-import-json').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const parsed = JSON.parse(reader.result);
+          if (parsed && Array.isArray(parsed.tactics)) {
+            state = parsed;
+            saveState();
+            renderAll();
+            document.getElementById('modal-backup').classList.add('hidden');
+            showToast('Данные восстановлены');
+          } else {
+            showToast('Неверный формат файла');
+          }
+        } catch (err) {
+          showToast('Ошибка чтения файла');
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    document.getElementById('btn-reset-default').addEventListener('click', () => {
+      state = createDefaultState();
+      saveState();
+      renderAll();
+      document.getElementById('modal-backup').classList.add('hidden');
+      showToast('Сброшено к данным с фото');
+    });
+
+    // Initial render
+    renderAll();
+  </script>
+</body>
+</html>
