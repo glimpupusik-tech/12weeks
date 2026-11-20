@@ -310,7 +310,7 @@
   <div id="toast" class="hidden fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-slate-900 text-white text-xs font-medium shadow-lg"></div>
 
   <script>
-    const STORAGE_KEY = 'twelve_week_year_y2_v6';
+    const STORAGE_KEY = 'twelve_week_year_y2_v7';
     const DAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
     const WEEKS_META = [
@@ -342,11 +342,11 @@
         goalFilter: 'all',
         tactics: [
           { id: 't_water', name: 'Вода', time: '06:00', goal: 1, days: [0,1,2,3,4,5,6] },
+          { id: 't_exercise', name: 'Зарядка', time: '06:30', goal: 1, days: [0,1,2,3,4,5,6] },
+          { id: 't_breakfast', name: 'Завтрак', time: '07:00', goal: 1, days: [0,1,2,3,4,5,6] },
           { id: 't_plan', name: 'Планирование недели', time: '08:00', goal: 1, days: [0] },
           { id: 't_invest', name: 'Инвестиции', time: '08:00', goal: 3, days: [3] },
-          { id: 't_exercise', name: 'Зарядка', time: '08:00', goal: 1, days: [0,1,2,3,4,5,6] },
           { id: 't_parable', name: 'Притча', time: '09:00', goal: 1, days: [0,1,2,3,4] },
-          { id: 't_breakfast', name: 'Завтрак', time: '09:00', goal: 1, days: [0,1,2,3,4,5,6] },
           { id: 't_lunch', name: 'Обед', time: '12:00', goal: 1, days: [0,1,2,3,4,5,6] },
           { id: 't_study', name: 'Учёба', time: '13:00', goal: 2, days: [0,2,3,4] },
           { id: 't_dinner', name: 'Ужин', time: '18:00', goal: 1, days: [0,1,2,3,4,5,6] },
